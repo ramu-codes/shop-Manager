@@ -49,15 +49,7 @@ cd ../client && npm install
 
 ### 2) Configure backend environment
 
-Create `server/.env` from `server/.env.example`:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/easyshop
-JWT_SECRET=replace-with-a-strong-random-secret
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-```
+ 
 
 ### 3) Configure frontend environment
 
