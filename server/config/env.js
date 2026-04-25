@@ -5,6 +5,30 @@
 
 const DEFAULT_DEV_ORIGINS = ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
+/**
+ * Convert any URL-like input to a normalized origin:
+ * - trims whitespace
+ * - removes wrapping quotes
+ * - converts to URL origin (scheme + host + port only)
+ * - strips trailing slash
+ * Returns empty string for invalid input.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+export function normalizeOrigin(value) {
+  const raw = String(value || '').trim().replace(/^['"]|['"]$/g, '');
+  if (!raw) return '';
+
+  try {
+    const hasProtocol = /^https?:\/\//i.test(raw);
+    const parsed = new URL(hasProtocol ? raw : `https://${raw}`);
+    return parsed.origin.replace(/\/+$/, '');
+  } catch {
+    return '';
+  }
+}
+
 export function validateEnv() {
   const missing = [];
   if (!process.env.MONGO_URI) missing.push('MONGO_URI');
@@ -24,11 +48,12 @@ export function getAllowedOrigins() {
 
   const fromClientEnv = clientUrl
     .split(',')
-    .map((s) => s.trim())
+    .map((s) => normalizeOrigin(s))
     .filter(Boolean);
 
-  const fromVercelEnv = vercelUrl ? [`https://${vercelUrl.replace(/^https?:\/\//i, '')}`] : [];
+  const fromVercelEnv = vercelUrl ? [normalizeOrigin(vercelUrl)] : [];
 
-  const list = [...new Set([...fromClientEnv, ...fromVercelEnv, ...DEFAULT_DEV_ORIGINS])];
+  const defaults = DEFAULT_DEV_ORIGINS.map((origin) => normalizeOrigin(origin)).filter(Boolean);
+  const list = [...new Set([...fromClientEnv, ...fromVercelEnv, ...defaults])];
   return list;
 }

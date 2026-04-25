@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { getAllowedOrigins } from './config/env.js';
+import { getAllowedOrigins, normalizeOrigin } from './config/env.js';
 
 import authRoutes from './routes/authRoutes.js';
 import customerRoutes from './routes/customerRoutes.js';
@@ -21,7 +21,8 @@ const allowedOrigins = getAllowedOrigins();
 
 function isAllowedOrigin(origin) {
   if (!origin) return true;
-  return allowedOrigins.includes(origin);
+  const normalized = normalizeOrigin(origin);
+  return allowedOrigins.includes(normalized);
 }
 
 /**
