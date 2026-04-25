@@ -1,0 +1,13 @@
+{
+  "name": "easyshop",
+  "private": true,
+  "version": "1.0.0",
+  "description": "EasyShop full-stack app workspace scripts",
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build:client": "npm run build --prefix client",
+    "start:server": "npm run start --prefix server"
+  }
+}
